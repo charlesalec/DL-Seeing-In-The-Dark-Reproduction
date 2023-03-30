@@ -2,8 +2,47 @@ import numpy as np
 from PIL import Image
 
 
-_errstr = "Mode is unknown or incompatible with input array shape."
+def pack_raw_sony(raw):
+    # pack Bayer image to 4 channels
+    im = raw.raw_image_visible.astype(np.float32)
+    im = np.maximum(im - 512, 0) / (16383 - 512)  # subtract the black level
 
+    im = np.expand_dims(im, axis=2)
+    img_shape = im.shape
+    H = img_shape[0]
+    W = img_shape[1]
+
+    out = np.concatenate((im[0:H:2, 0:W:2, :],
+                          im[0:H:2, 1:W:2, :],
+                          im[1:H:2, 1:W:2, :],
+                          im[1:H:2, 0:W:2, :]), axis=2)
+    return out
+
+
+def random_crop(image, label, patch_size):
+    """
+    Crop a random patch from the image
+    """
+    # get the shape of the image
+    h, w = image.shape[:2]
+    #h = image.shape[1]
+    #w = image.shape[2]
+
+    # get the top left corner of the random crop
+    x = np.random.randint(0, w - patch_size)
+    y = np.random.randint(0, h - patch_size)
+
+    # crop the image
+    image = image[y:y + patch_size, x:x + patch_size]
+    label = label[y * 2:y * 2 + patch_size * 2, x * 2:x * 2 + patch_size * 2]
+    # image = image[:, y:y + patch_size, x:x + patch_size, :]
+    # label = label[:, y:y + patch_size, x:x + patch_size, :]
+
+    return image, label
+
+# Function that is a replacement for scipy.misc.toimage
+
+_errstr = "Mode is unknown or incompatible with input array shape."
 
 def bytescale(data, cmin=None, cmax=None, high=255, low=0):
     """
