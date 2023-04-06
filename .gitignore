@@ -3,3 +3,4 @@
 __pycache__/
 /results*
 /checkpoints_private
+/results_test
