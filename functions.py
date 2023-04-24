@@ -1,5 +1,16 @@
 import numpy as np
+import math
 from PIL import Image
+
+def calculatePSNR(img1, img2):
+    img1 = np.array(img1)
+    img2 = np.array(img2)
+    mse = np.mean((img1 - img2) ** 2)
+    if mse == 0:
+        return 100
+    PIXEL_MAX = 255.0
+    return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
+
 
 
 def pack_raw_sony(raw):
@@ -224,3 +235,4 @@ def toimage(arr, high=255, low=0, cmin=None, cmax=None, pal=None,
     # Here we know data and mode is correct
     image = Image.frombytes(mode, shape, strdata)
     return image
+
