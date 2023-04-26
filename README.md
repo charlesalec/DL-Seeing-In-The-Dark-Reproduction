@@ -1,4 +1,4 @@
-# DL-Seeing-In-The-Dark-Reproduction
+# Learning to see in the dark reproduction
 This repository aims to reproduce the "Learning to see in the dark" paper by Chen et al. Which can be found here https://arxiv.org/abs/1805.01934. The original paper code can be found in 
 /original-paper-code.
 
